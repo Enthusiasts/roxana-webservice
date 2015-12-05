@@ -16,8 +16,8 @@ with PostgresInjection() as postgres:
         if 'type' in request.args:
             ent_type = request.args["type"]
             ent_dao = EntertainmentsDAO(postgres)
-            result = ent_dao.by_type(ent_type)
-            return jsonify(results=result), 200
+            count, result = ent_dao.by_type(ent_type)
+            return jsonify(length=count, results=result), 200
 
 
     if __name__ == '__main__':

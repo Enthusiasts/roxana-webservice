@@ -6,8 +6,8 @@ from psycopg2 import pool
 
 
 class PostgresInjection(object):
-    __dbConfig = dict(dbhost="localhost", dbport=5432, dbname="roxana", dbuser="roxana_consumer",
-                      dbpassword="qwerty1234")
+    __dbConfig = dict(dbhost="localhost", dbport=5432,
+                      dbname="roxana", dbuser="roxana_consumer", dbpassword="qwerty1234")
 
     def one(self):
         return PostgresConnectionOwner(self.__pool)
@@ -36,6 +36,7 @@ class PostgresConnectionOwner(object):
 
     def __enter__(self):
         self.connection = self.__pool.getconn(key=self.__key)
+        self.connection.set_client_encoding("UTF-8")
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
