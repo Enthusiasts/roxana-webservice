@@ -16,7 +16,10 @@ def get_entertainment():
     if 'type' in request.args:
         ent_type = request.args["type"]
         ent_dao = EntertainmentsDAO(postgres)
-        count, result = ent_dao.by_type(ent_type)
+        if 'photos' in request.args and request.args['photos'].lower() == 'true':
+            count, result = ent_dao.by_type_with_photo(ent_type)
+        else:
+            count, result = ent_dao.by_type(ent_type)
         return jsonify(length=count, results=result), 200
 
 

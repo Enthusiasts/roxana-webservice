@@ -42,6 +42,7 @@ class PostgresConnectionOwner(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
             print("Rollback")
+            print(exc_val)
             self.connection.rollback()
         else:
             self.connection.commit()

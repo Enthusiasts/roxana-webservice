@@ -7,9 +7,8 @@ class EntertainmentsDAO(object):
     def __init__(self, postgres):
         self.__postgres = postgres
 
-    def by_type(self, ent_type):
-        if ent_type:
-            def query_param(ent_type):
+    @staticmethod
+    def query_param(ent_type):
                 return {
                     "bar": "Бары",
                     "fastfood": "Предприятия быстрого обслуживания",
@@ -27,8 +26,11 @@ class EntertainmentsDAO(object):
                     "workshop": "Специализированные цеха"
                 }[ent_type.lower()]
 
+    def by_type(self, ent_type):
+        if ent_type:
+
             try:
-                query_actual = query_param(ent_type)
+                query_actual = EntertainmentsDAO.query_param(ent_type)
             except KeyError:
                 return 0, []
 
@@ -50,6 +52,44 @@ class EntertainmentsDAO(object):
                             "ent_type": x[8]
                         }
                         , rows))
+                else:
+                    result = []
+                return curs.rowcount, result
+
+    def by_type_with_photo(self, ent_type):
+        if ent_type:
+
+            try:
+                query_actual = EntertainmentsDAO.query_param(ent_type)
+            except KeyError:
+                return 0, []
+
+            with self.__postgres.one() as owner, owner.connection.cursor() as curs:
+                curs.execute("""
+                    SELECT entertainments.*, array_agg(checkins.url)
+                    FROM entertainments LEFT JOIN checkins ON entertainments.id = checkins.entertainment_id
+                    WHERE entertainments.type=%s
+                    GROUP BY entertainments.id
+                    LIMIT 10000
+                    """, (query_actual,))
+                if curs.rowcount > 0:
+                    rows = curs.fetchall()
+                    # (id, title, cost, zone_title, longitude, latitude, seats_count, social_priveleges, ent_type)
+                    result = list(map(
+                        lambda x: (x[0], {
+                            "id": x[0],
+                            "title": x[1],
+                            "cost": x[2],
+                            "zone_title": x[3],
+                            "longitude": x[4],
+                            "latitude": x[5],
+                            "seats_count": x[6],
+                            "social_priveleges": x[7],
+                            "ent_type": x[8],
+                            "instagram_urls": x[9]
+                        })
+                        , rows))
+
                 else:
                     result = []
                 return curs.rowcount, result
