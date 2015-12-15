@@ -76,7 +76,7 @@ class EntertainmentsDAO(object):
                     rows = curs.fetchall()
                     # (id, title, cost, zone_title, longitude, latitude, seats_count, social_priveleges, ent_type)
                     result = list(map(
-                        lambda x: (x[0], {
+                        lambda x: {
                             "id": x[0],
                             "title": x[1],
                             "cost": x[2],
@@ -87,7 +87,7 @@ class EntertainmentsDAO(object):
                             "social_priveleges": x[7],
                             "ent_type": x[8],
                             "instagram_urls": x[9]
-                        })
+                        }
                         , rows))
 
                 else:
