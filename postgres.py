@@ -6,7 +6,7 @@ from psycopg2 import pool
 
 
 class PostgresInjection(object):
-    __dbConfig = dict(dbhost="debalid-aws-instance.c5iybfyguusg.eu-west-1.rds.amazonaws.com", dbport=5432,
+    __dbConfig = dict(dbhost="localhost", dbport=5432,
                       dbname="roxana", dbuser="roxana_consumer", dbpassword="qwerty1234")
 
     def one(self):

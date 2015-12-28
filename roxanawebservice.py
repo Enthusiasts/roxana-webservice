@@ -1,6 +1,6 @@
 __author__ = 'debalid'
 
-from flask import Flask, Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify, send_from_directory
 from entertainments import EntertainmentsDAO
 from postgres import PostgresInjection
 import json
@@ -16,11 +16,27 @@ def get_entertainment():
     if 'type' in request.args:
         ent_type = request.args["type"]
         ent_dao = EntertainmentsDAO(postgres)
-        if 'photos' in request.args and request.args['photos'].lower() == 'true':
-            count, result = ent_dao.by_type_with_photo(ent_type)
+
+        if 'cluster' in request.args and request.args['cluster']:
+            if request.args['cluster'].lower() == 'checkins':
+                count, result = ent_dao.by_type_with_cluster_checkins(ent_type)
+            elif request.args['cluster'].lower == 'cost':
+                count, result = 0, []
+            else:
+                return 404
         else:
-            count, result = ent_dao.by_type(ent_type)
+            count, result = ent_dao.by_type_with_photo(ent_type)
+
+        #if 'photos' in request.args and request.args['photos'].lower() == 'true':
+            #count, result = ent_dao.by_type_with_photo(ent_type)
+        #else:
+            #count, result = ent_dao.by_type(ent_type)
         return jsonify(length=count, results=result), 200
+
+
+@api.route('/static/<path:path>', methods=['GET'])
+def get_static(path):
+    return send_from_directory("static", path)
 
 
 app = Flask(__name__)
