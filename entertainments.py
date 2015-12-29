@@ -128,7 +128,7 @@ class EntertainmentsDAO(object):
                             "social_priveleges": x[7],
                             "ent_type": x[8],
                             "instagram_urls": x[9],
-                            "cluster_checkins_type": x[10]
+                            "cluster_type": x[10]
                         }
                         , rows))
 
