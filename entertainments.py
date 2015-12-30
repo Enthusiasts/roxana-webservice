@@ -105,7 +105,7 @@ class EntertainmentsDAO(object):
 
             with self.__postgres.one() as owner, owner.connection.cursor() as curs:
                 curs.execute("\
-                    SELECT entertainments.*, array_agg(checkins.url), entertainments_stats.cluster_checkins_type \
+                    SELECT entertainments.*, array_agg(checkins.url), entertainments_stats.cluster_checkins_type, entertainments_stats.checkins_num \
                     FROM entertainments \
                       LEFT JOIN entertainments_stats ON entertainments.id = entertainments_stats.ent_id \
                       LEFT JOIN checkins ON entertainments.id = checkins.entertainment_id \
@@ -128,7 +128,8 @@ class EntertainmentsDAO(object):
                             "social_priveleges": x[7],
                             "ent_type": x[8],
                             "instagram_urls": x[9],
-                            "cluster_type": x[10]
+                            "cluster_type": x[10],
+                            "checkins_num": x[11]
                         }
                         , rows))
 
