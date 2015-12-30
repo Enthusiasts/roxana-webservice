@@ -17,13 +17,8 @@ def get_entertainment():
         ent_type = request.args["type"]
         ent_dao = EntertainmentsDAO(postgres)
 
-        if 'cluster' in request.args and request.args['cluster']:
-            if request.args['cluster'].lower() == 'checkins':
-                count, result = ent_dao.by_type_with_cluster_checkins(ent_type)
-            elif request.args['cluster'].lower == 'cost':
-                count, result = 0, []
-            else:
-                return 404
+        if 'cluster' in request.args:
+            count, result = ent_dao.by_type_with_cluster_checkins(ent_type)
         else:
             count, result = ent_dao.by_type_with_photo(ent_type)
 
