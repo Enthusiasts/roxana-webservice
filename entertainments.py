@@ -135,3 +135,22 @@ class EntertainmentsDAO(object):
                 else:
                     result = []
                 return curs.rowcount, result
+
+    def cluster_checkins_info(self):
+        with self.__postgres.one() as owner, owner.connection.cursor() as curs:
+            curs.execute("\
+                SELECT cluster_checkins_type, cluster_checkins_mean\
+                FROM entertainments_stats\
+                GROUP BY cluster_checkins_type, cluster_checkins_mean\
+                ORDER BY cluster_checkins_mean\
+            ")
+            if curs.rowcount > 0:
+                rows = curs.fetchall()
+                result = list(map(lambda x: {
+                    "cluster_label": "checkins",
+                    "cluster_type": x[0],
+                    "cluster_mean": x[1],
+                    "cluster_mean_rounded": round(x[1])
+                }, rows))
+            else: result = []
+            return curs.rowcount, result

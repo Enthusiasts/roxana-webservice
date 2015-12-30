@@ -33,6 +33,25 @@ def get_entertainment():
             #count, result = ent_dao.by_type(ent_type)
         return jsonify(length=count, results=result), 200
 
+    else:
+        return 404
+
+
+@api.route('/entertainment/clusterinfo/')
+def get_entertainment_clusterinfo():
+    if 'label' in request.args:
+        label = request.args["label"]
+        ent_dao = EntertainmentsDAO(postgres)
+
+        if label.lower() == "checkins":
+            count, result = ent_dao.cluster_checkins_info()
+        else:
+            count, result = 0, []
+
+        return jsonify(length=count, results=result), 200
+
+    else:
+        return 404
 
 @api.route('/static/<path:path>', methods=['GET'])
 def get_static(path):
